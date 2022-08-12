@@ -14,7 +14,7 @@ void setup() {
 
 void drawCat() {
   // Body variables
-  float bodyMaxWidth = width * 0.45;
+  float bodyMaxWidth = width * 0.4;
   float bodyMinWidth = bodyMaxWidth / 2;
   float bodyHeight = height * 0.4;
   float bodyX = ((width - bodyMaxWidth) / 2);
@@ -86,7 +86,7 @@ void drawHead(float diameter) {
       pop();
     } // END FACE.EYES
 
-    { // START FACE.NOSE
+    { // START FACE.NOSE+MOUTH
       push();
       float noseWidth = UNIT;
       float noseHeight = UNIT;
@@ -94,9 +94,9 @@ void drawHead(float diameter) {
       float noseTranslateY = halfHeadHeight;
       translate(noseTranslateX, noseTranslateY);
 
-      { // START FACE.NOSE.WHISKERS
+      { // START FACE.NOSE+MOUTH.WHISKERS
         push();
-        float whiskersCount = 4;
+        float whiskersCount = 3;
         float whiskersWidth = noseWidth * 2.8;
         float whiskersHeight = noseHeight * 0.6;
         float whiskersSpacing = whiskersHeight / max(1, whiskersCount - 1);
@@ -112,12 +112,45 @@ void drawHead(float diameter) {
         }
 
         pop();
-      } // END FACE.NOSE.WHISKERS
+      } // END FACE.NOSE+MOUTH.WHISKERS
 
+      // Draw the nose
       fill(255, 0, 0);
       triangle(0, 0, noseWidth, 0, noseWidth / 2, noseHeight);
+
+      { // START FACE.NOSE+MOUTH.MOUTH
+        push();
+        float mouthTranslateY = noseHeight;
+        float mouthHeight = noseWidth * 0.3;
+
+        // Draw the nose and lips connector
+        stroke(0);
+        translate(noseWidth / 2, mouthTranslateY);
+        line(0, 0, 0, mouthHeight);
+
+        // Draw the lips
+        float lipWidth = noseWidth * 0.5;
+        float lipHeight = noseHeight * 0.25;
+        translate(0, mouthHeight);
+        line(0, 0, -lipWidth, lipHeight);
+        line(0, 0, lipWidth, lipHeight);
+
+        pop();
+      } // END FACE.NOSE+MOUTH.MOUTH
+
       pop();
-    } // END FACE.NOSE
+    } // END FACE.NOSE+MOUTH
+
+    { // START FACE.EARS
+      push();
+      float earWidth = headWidth * 0.2;
+      float earHeight = earWidth;
+      fill(235);
+      triangle(earWidth / 2, 0, 0, earHeight, earWidth, earHeight);
+      translate(headWidth - earWidth, 0);
+      triangle(earWidth / 2, 0, 0, earHeight, earWidth, earHeight);
+      pop();
+    } // END FACE.EARS
 
     pop();
   } // END FACE
