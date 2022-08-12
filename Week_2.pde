@@ -90,18 +90,32 @@ void drawHead(float diameter) {
       push();
       float noseWidth = UNIT;
       float noseHeight = UNIT;
-      float noseX = (halfHeadWidth - (noseWidth / 2));
-      float noseY = (halfHeadHeight * 1);
+      float noseTranslateX = halfHeadWidth - (noseWidth / 2);
+      float noseTranslateY = halfHeadHeight;
+      translate(noseTranslateX, noseTranslateY);
 
-      float noseTopLeftX = noseX;
-      float noseTopLeftY = noseY;
-      float noseTopRightX = noseX + noseWidth;
-      float noseTopRightY = noseY;
-      float noseBottomX = halfHeadWidth;
-      float noseBottomY = noseY + noseHeight;
+      { // START FACE.NOSE.WHISKERS
+        push();
+        float whiskersCount = 4;
+        float whiskersWidth = noseWidth * 2.8;
+        float whiskersHeight = noseHeight * 0.6;
+        float whiskersSpacing = whiskersHeight / max(1, whiskersCount - 1);
+        float whiskersTranslateX = (noseWidth - whiskersWidth) / 2;
+        float whiskersTranslateY = (noseHeight - whiskersHeight) / 2;
+
+        translate(whiskersTranslateX, whiskersTranslateY);
+        stroke(0);
+
+        for (int i = 0; i < whiskersCount; i++) {
+          float whiskerY = i * whiskersSpacing;
+          line(0, whiskerY, whiskersWidth, whiskerY);
+        }
+
+        pop();
+      } // END FACE.NOSE.WHISKERS
 
       fill(255, 0, 0);
-      triangle(noseTopLeftX, noseTopLeftY, noseTopRightX, noseTopRightY, noseBottomX, noseBottomY);
+      triangle(0, 0, noseWidth, 0, noseWidth / 2, noseHeight);
       pop();
     } // END FACE.NOSE
 
