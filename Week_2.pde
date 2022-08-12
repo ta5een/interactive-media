@@ -1,6 +1,10 @@
+// Week 2 (Code A Cat)
+// Author: Mohammed Ta-Seen Islam (13215660)
+
 static final int UNIT = 30;
 static final float OFFSET_Y_MULTIPLE = 0.25;
 
+color backgroundColor = #000000;
 color catFaceColor = #FFFFFF;
 color catBodyColor = #FFE999;
 color catEyeColor = #FFFFFF;
@@ -14,7 +18,7 @@ void settings() {
 }
 
 void setup() {
-  background(0);
+  background(backgroundColor);
   ellipseMode(CORNER);
   drawCat();
 }
@@ -79,7 +83,7 @@ void drawHead(float diameter) {
 
     { // START FACE.EYES
       push();
-      float eyeWidth = headWidth * 0.2;
+      float eyeWidth = headWidth * 0.18;
       float eyeHeight = eyeWidth;
       float pupilWidth = eyeWidth * 0.6;
       float pupilHeight = eyeWidth * 0.6;
