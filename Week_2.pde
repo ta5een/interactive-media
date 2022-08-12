@@ -2,10 +2,10 @@ static final int UNIT = 30;
 static final float OFFSET_Y_MULTIPLE = 0.25;
 
 color catFaceColor = #FFFFFF;
-color catEyeColor = #000000;
-color catPupilColor = #E1F084;
-color catNoseColor = #FF6363;
 color catBodyColor = #FFE999;
+color catEyeColor = #FFFFFF;
+color catPupilColor = #000000;
+color catNoseColor = #FF6363;
 color catEarColor = catBodyColor;
 color catPawColor = catFaceColor;
 
@@ -15,35 +15,33 @@ void settings() {
 
 void setup() {
   background(0);
-  noStroke();
   ellipseMode(CORNER);
   drawCat();
 }
 
 void drawCat() {
   // Body variables
-  float bodyMaxWidth = width * 0.4;
-  float bodyMinWidth = bodyMaxWidth / 2;
-  float bodyHeight = height * 0.4;
-  float bodyX = ((width - bodyMaxWidth) / 2);
+  float bodyWidth = width * 0.5;
+  float bodyHeight = height * 0.5;
+  float bodyX = ((width - bodyWidth) / 2);
   float bodyY = ((height - bodyHeight) / 2);
   bodyY += bodyY * OFFSET_Y_MULTIPLE;
 
   // Head variables
-  float headDiameter = width * 0.3;
+  float headDiameter = bodyHeight * 0.65;
 
   // Paw variables
-  float pawWidth = bodyMaxWidth * 0.3;
-  float pawHeight = (float)UNIT * 2;
+  float pawWidth = bodyWidth * 0.3;
+  float pawHeight = bodyHeight * 0.3;
 
   { // START BODY
     push();
     translate(bodyX, bodyY);
-    drawBody(bodyMinWidth, bodyMaxWidth, bodyHeight);
+    drawBody(bodyWidth, bodyHeight);
 
     { // START BODY.HEAD
       push();
-      float translateHeadX = (bodyMaxWidth - headDiameter) / 2;
+      float translateHeadX = (bodyWidth - headDiameter) / 2;
       float translateHeadY = -1 * (headDiameter / 2);
 
       translate(translateHeadX, translateHeadY);
@@ -54,7 +52,7 @@ void drawCat() {
     { // START BODY.PAWS
       push();
       float translateLeftPawX = -1 * (pawWidth / 2);
-      float translateRightPawX = bodyMaxWidth;
+      float translateRightPawX = bodyWidth;
       float translatePawY = bodyHeight - (pawHeight / 2);
 
       translate(translateLeftPawX, translatePawY);
@@ -81,8 +79,10 @@ void drawHead(float diameter) {
 
     { // START FACE.EYES
       push();
-      float eyeWidth = UNIT;
-      float eyeHeight = UNIT / 2;
+      float eyeWidth = headWidth * 0.2;
+      float eyeHeight = eyeWidth;
+      float pupilWidth = eyeWidth * 0.6;
+      float pupilHeight = eyeWidth * 0.6;
       float eyeY = (headHeight / 3);
       float leftEyeX = (halfHeadWidth) - eyeWidth;
       float rightEyeX = (halfHeadWidth) + eyeWidth;
@@ -91,18 +91,18 @@ void drawHead(float diameter) {
       ellipseMode(CENTER);
       ellipse(leftEyeX, eyeY, eyeWidth, eyeHeight);
       ellipse(rightEyeX, eyeY, eyeWidth, eyeHeight);
-      
+
       fill(catPupilColor);
-      ellipse(leftEyeX, eyeY, 10, 10);
-      ellipse(rightEyeX, eyeY, 10, 10);
-      
+      ellipse(leftEyeX, eyeY, pupilWidth, pupilHeight);
+      ellipse(rightEyeX, eyeY, pupilWidth,pupilHeight);
+
       pop();
     } // END FACE.EYES
 
     { // START FACE.NOSE+MOUTH
       push();
-      float noseWidth = UNIT;
-      float noseHeight = UNIT;
+      float noseWidth = headWidth * 0.2;
+      float noseHeight = noseWidth;
       float noseTranslateX = halfHeadWidth - (noseWidth / 2);
       float noseTranslateY = halfHeadHeight;
       translate(noseTranslateX, noseTranslateY);
@@ -158,47 +158,35 @@ void drawHead(float diameter) {
       push();
       float earsTranslateY = headHeight * 0.05;
       float earsOffsetX = headHeight * 0.05;
-      
+
       float earWidth = headWidth * 0.3;
       float earHeight = earWidth;
-      
+
       fill(catEarColor);
-      
+
       // Draw left ear
       push();
       translate(earsOffsetX, earsTranslateY);
       triangle(0, 0, earWidth, 0, 0, earHeight);
       pop();
-      
+
       // Draw right ear
       push();
       translate(headWidth - earWidth - earsOffsetX, earsTranslateY);
       triangle(0, 0, earWidth, 0, earWidth, earHeight);
       pop();
-      
+
       pop();
     } // END FACE.EARS
 
     pop();
-  } // END FACE
+ } // END FACE
 }
 
-void drawBody(float topWidth, float bottomWidth, float myHeight) {
-  float topLeftX = max(0, bottomWidth - topWidth) / 2;
-  float topLeftY = 0;
-
-  float topRightX = topLeftX + topWidth;
-  float topRightY = 0;
-
-  float bottomLeftX = max(0, topWidth - bottomWidth) / 2;
-  float bottomLeftY = myHeight;
-
-  float bottomRightX = bottomLeftX + bottomWidth;
-  float bottomRightY = myHeight;
-
+void drawBody(float myWidth, float myHeight) {
   push(); // START BODY
   fill(catBodyColor);
-  quad(topLeftX, topLeftY, topRightX, topRightY, bottomRightX, bottomRightY, bottomLeftX, bottomLeftY);
+  arc(0, 0, myWidth, myHeight * 2, PI, TWO_PI);
   pop(); // END BODY
 }
 
