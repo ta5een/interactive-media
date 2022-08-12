@@ -13,90 +13,124 @@ void setup() {
 }
 
 void drawCat() {
-  float bodyMaxWidth = width * 0.4;
+  // Body variables
+  float bodyMaxWidth = width * 0.45;
   float bodyMinWidth = bodyMaxWidth / 2;
-  float bodyHeight = height * 0.45;
+  float bodyHeight = height * 0.4;
   float bodyX = ((width - bodyMaxWidth) / 2);
   float bodyY = ((height - bodyHeight) / 2);
   bodyY += bodyY * OFFSET_Y_MULTIPLE;
 
+  // Head variables
   float headDiameter = width * 0.3;
-  float headX = (width - headDiameter) / 2;
-  float headY = bodyY - (headDiameter / 2);
 
+  // Paw variables
   float pawWidth = bodyMaxWidth * 0.3;
   float pawHeight = (float)UNIT * 2;
-  float pawY = (bodyY + bodyHeight) - (pawHeight / 2);
-  float leftPawX = bodyX - (pawWidth / 2);
-  float rightPawX = (bodyX + bodyMaxWidth) - (pawWidth / 2);
 
-  fill(235);
-  drawBody(bodyX, bodyY, bodyMinWidth, bodyMaxWidth, bodyHeight);
+  { // START BODY
+    push();
+    translate(bodyX, bodyY);
+    drawBody(bodyMinWidth, bodyMaxWidth, bodyHeight);
 
-  fill(255);
-  drawHead(headX, headY, headDiameter);
+    { // START BODY.HEAD
+      push();
+      float translateHeadX = (bodyMaxWidth - headDiameter) / 2;
+      float translateHeadY = -1 * (headDiameter / 2);
 
-  fill(255);
-  drawPaw(leftPawX, pawY, pawWidth, pawHeight);
-  drawPaw(rightPawX, pawY, pawWidth, pawHeight);
+      translate(translateHeadX, translateHeadY);
+      drawHead(headDiameter);
+      pop();
+    } // END BODY.HEAD
+
+    { // START BODY.PAWS
+      push();
+      float translateLeftPawX = -1 * (pawWidth / 2);
+      float translateRightPawX = bodyMaxWidth;
+      float translatePawY = bodyHeight - (pawHeight / 2);
+
+      translate(translateLeftPawX, translatePawY);
+      drawPaw(pawWidth, pawHeight);
+      translate(translateRightPawX, 0);
+      drawPaw(pawWidth, pawHeight);
+      pop();
+    } // END BODY.PAWS
+
+    pop();
+  } // END BODY
 }
 
-void drawHead(float x, float y, float diameter) {
+void drawHead(float diameter) {
   float headWidth = diameter;
   float headHeight = diameter;
-  ellipse(x, y, headWidth, headHeight);
-
-  // Start CENTER ellipse mode
-  ellipseMode(CENTER);
-
   float halfHeadWidth = headWidth / 2;
   float halfHeadHeight = headHeight / 2;
 
-  float eyeWidth = UNIT;
-  float eyeHeight = UNIT / 2;
-  float eyeY = y + (headHeight / 3);
-  float leftEyeX = (x + halfHeadWidth) - eyeWidth;
-  float rightEyeX = (x + halfHeadWidth) + eyeWidth;
+  { // START FACE
+    push();
+    fill(255);
+    ellipse(0, 0, headWidth, headHeight);
 
-  fill(0);
-  ellipse(leftEyeX, eyeY, eyeWidth, eyeHeight);
-  ellipse(rightEyeX, eyeY, eyeWidth, eyeHeight);
+    { // START FACE.EYES
+      push();
+      float eyeWidth = UNIT;
+      float eyeHeight = UNIT / 2;
+      float eyeY = (headHeight / 3);
+      float leftEyeX = (halfHeadWidth) - eyeWidth;
+      float rightEyeX = (halfHeadWidth) + eyeWidth;
 
-  // End CENTER ellipse mode
-  ellipseMode(CORNER);
+      fill(0);
+      ellipseMode(CENTER);
+      ellipse(leftEyeX, eyeY, eyeWidth, eyeHeight);
+      ellipse(rightEyeX, eyeY, eyeWidth, eyeHeight);
+      pop();
+    } // END FACE.EYES
 
-  float noseWidth = UNIT;
-  float noseHeight = UNIT;
-  float noseX = x + (halfHeadWidth - (noseWidth / 2));
-  float noseY = y + (halfHeadHeight * 1);
+    { // START FACE.NOSE
+      push();
+      float noseWidth = UNIT;
+      float noseHeight = UNIT;
+      float noseX = (halfHeadWidth - (noseWidth / 2));
+      float noseY = (halfHeadHeight * 1);
 
-  float noseTopLeftX = noseX;
-  float noseTopLeftY = noseY;
-  float noseTopRightX = noseX + noseWidth;
-  float noseTopRightY = noseY;
-  float noseBottomX = x + halfHeadWidth;
-  float noseBottomY = noseY + noseHeight;
+      float noseTopLeftX = noseX;
+      float noseTopLeftY = noseY;
+      float noseTopRightX = noseX + noseWidth;
+      float noseTopRightY = noseY;
+      float noseBottomX = halfHeadWidth;
+      float noseBottomY = noseY + noseHeight;
 
-  fill(255, 0, 0);
-  triangle(noseTopLeftX, noseTopLeftY, noseTopRightX, noseTopRightY, noseBottomX, noseBottomY);
+      fill(255, 0, 0);
+      triangle(noseTopLeftX, noseTopLeftY, noseTopRightX, noseTopRightY, noseBottomX, noseBottomY);
+      pop();
+    } // END FACE.NOSE
+
+    pop();
+  } // END FACE
 }
 
-void drawBody(float x, float y, float topWidth, float bottomWidth, float myHeight) {
-  float topLeftX = x + max(0, bottomWidth - topWidth) / 2;
-  float topLeftY = y;
+void drawBody(float topWidth, float bottomWidth, float myHeight) {
+  float topLeftX = max(0, bottomWidth - topWidth) / 2;
+  float topLeftY = 0;
 
   float topRightX = topLeftX + topWidth;
-  float topRightY = y;
+  float topRightY = 0;
 
-  float bottomLeftX = x + max(0, topWidth - bottomWidth) / 2;
-  float bottomLeftY = y + myHeight;
+  float bottomLeftX = max(0, topWidth - bottomWidth) / 2;
+  float bottomLeftY = myHeight;
 
   float bottomRightX = bottomLeftX + bottomWidth;
-  float bottomRightY = y + myHeight;
+  float bottomRightY = myHeight;
 
+  push(); // START BODY
+  fill(235);
   quad(topLeftX, topLeftY, topRightX, topRightY, bottomRightX, bottomRightY, bottomLeftX, bottomLeftY);
+  pop(); // END BODY
 }
 
-void drawPaw(float x, float y, float myWidth, float myHeight) {
-  arc(x, y, myWidth, myHeight, PI, TWO_PI);
+void drawPaw(float myWidth, float myHeight) {
+  push(); // START PAW
+  fill(255);
+  arc(0, 0, myWidth, myHeight, PI, TWO_PI);
+  pop(); // END PAW
 }
