@@ -1,6 +1,13 @@
 static final int UNIT = 30;
 static final float OFFSET_Y_MULTIPLE = 0.25;
 
+color catFaceColor = #FFFFFF;
+color catEyeColor = #000000;
+color catNoseColor = #FF0000;
+color catBodyColor = #FFE999;
+color catEarColor = catBodyColor;
+color catPawColor = catFaceColor;
+
 void settings() {
   size(UNIT * 20, UNIT * 20);
 }
@@ -68,7 +75,7 @@ void drawHead(float diameter) {
 
   { // START FACE
     push();
-    fill(255);
+    fill(catFaceColor);
     ellipse(0, 0, headWidth, headHeight);
 
     { // START FACE.EYES
@@ -79,7 +86,7 @@ void drawHead(float diameter) {
       float leftEyeX = (halfHeadWidth) - eyeWidth;
       float rightEyeX = (halfHeadWidth) + eyeWidth;
 
-      fill(0);
+      fill(catEyeColor);
       ellipseMode(CENTER);
       ellipse(leftEyeX, eyeY, eyeWidth, eyeHeight);
       ellipse(rightEyeX, eyeY, eyeWidth, eyeHeight);
@@ -115,7 +122,7 @@ void drawHead(float diameter) {
       } // END FACE.NOSE+MOUTH.WHISKERS
 
       // Draw the nose
-      fill(255, 0, 0);
+      fill(catNoseColor);
       triangle(0, 0, noseWidth, 0, noseWidth / 2, noseHeight);
 
       { // START FACE.NOSE+MOUTH.MOUTH
@@ -145,7 +152,7 @@ void drawHead(float diameter) {
       push();
       float earWidth = headWidth * 0.2;
       float earHeight = earWidth;
-      fill(235);
+      fill(catEarColor);
       triangle(earWidth / 2, 0, 0, earHeight, earWidth, earHeight);
       translate(headWidth - earWidth, 0);
       triangle(earWidth / 2, 0, 0, earHeight, earWidth, earHeight);
@@ -170,14 +177,14 @@ void drawBody(float topWidth, float bottomWidth, float myHeight) {
   float bottomRightY = myHeight;
 
   push(); // START BODY
-  fill(235);
+  fill(catBodyColor);
   quad(topLeftX, topLeftY, topRightX, topRightY, bottomRightX, bottomRightY, bottomLeftX, bottomLeftY);
   pop(); // END BODY
 }
 
 void drawPaw(float myWidth, float myHeight) {
   push(); // START PAW
-  fill(255);
+  fill(catPawColor);
   arc(0, 0, myWidth, myHeight, PI, TWO_PI);
   pop(); // END PAW
 }
