@@ -3,7 +3,7 @@ static final float OFFSET_Y_MULTIPLE = 0.25;
 
 color catFaceColor = #FFFFFF;
 color catEyeColor = #000000;
-color catNoseColor = #FF0000;
+color catNoseColor = #FF6363;
 color catBodyColor = #FFE999;
 color catEarColor = catBodyColor;
 color catPawColor = catFaceColor;
@@ -150,12 +150,26 @@ void drawHead(float diameter) {
 
     { // START FACE.EARS
       push();
-      float earWidth = headWidth * 0.2;
+      float earsTranslateY = headHeight * 0.05;
+      float earsOffsetX = headHeight * 0.05;
+      
+      float earWidth = headWidth * 0.3;
       float earHeight = earWidth;
+      
       fill(catEarColor);
-      triangle(earWidth / 2, 0, 0, earHeight, earWidth, earHeight);
-      translate(headWidth - earWidth, 0);
-      triangle(earWidth / 2, 0, 0, earHeight, earWidth, earHeight);
+      
+      // Draw left ear
+      push();
+      translate(earsOffsetX, earsTranslateY);
+      triangle(0, 0, earWidth, 0, 0, earHeight);
+      pop();
+      
+      // Draw right ear
+      push();
+      translate(headWidth - earWidth - earsOffsetX, earsTranslateY);
+      triangle(0, 0, earWidth, 0, earWidth, earHeight);
+      pop();
+      
       pop();
     } // END FACE.EARS
 
