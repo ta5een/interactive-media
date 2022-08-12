@@ -3,6 +3,7 @@ static final float OFFSET_Y_MULTIPLE = 0.25;
 
 color catFaceColor = #FFFFFF;
 color catEyeColor = #000000;
+color catPupilColor = #E1F084;
 color catNoseColor = #FF6363;
 color catBodyColor = #FFE999;
 color catEarColor = catBodyColor;
@@ -90,6 +91,11 @@ void drawHead(float diameter) {
       ellipseMode(CENTER);
       ellipse(leftEyeX, eyeY, eyeWidth, eyeHeight);
       ellipse(rightEyeX, eyeY, eyeWidth, eyeHeight);
+      
+      fill(catPupilColor);
+      ellipse(leftEyeX, eyeY, 10, 10);
+      ellipse(rightEyeX, eyeY, 10, 10);
+      
       pop();
     } // END FACE.EYES
 
