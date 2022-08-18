@@ -20,13 +20,13 @@ float minStarRotDelta = 0.5;
 // The maximum delta when speeding the rotation of the star
 float maxStarRotDelta = 2.5;
 
-// The increment value when transition the color of the star
+// The increment value when transition the colour of the star
 float starColorInc = starScaleInc;
-// The background color
+// The background colour
 color backgroundColor = color(38, 38, 38, 50);
-// The star's fill color when calm
+// The star's fill colour when calm
 color starCalmColor = color(84, 255, 255);
-// The star's fill color when agitated
+// The star's fill colour when agitated
 color starAgitatedColor = color(255, 101, 84);
 
 // ------------------------ INTERNAL STATE VARIABLES ---------------------------
@@ -64,26 +64,26 @@ void draw() {
   float starMaxX = width - starOuterRadius;
   float starMaxY = width - starOuterRadius;
 
-  // Translate the star to the mouse's current x and y position, but don't let
-  // the polygon escape the window.
+  // Translate the star to the mouse's current x and y position while
+  // constraining it within the window's bounds.
   float translateX = constrain(mouseX, starMinX, starMaxX);
   float translateY = constrain(mouseY, starMinY, starMaxY);
 
-  // Calculate the star's scale, rotation delta and color delta depending on
-  // whether or not the mouse is pressed
+  // Calculate the star's scale, rotation delta and colour delta depending on
+  // whether or not the mouse is currently being pressed
   if (mousePressed) {
-    // This branch will:
+    // If the mouse is pressed:
     // - decrease the scale until it reaches `minStarScale`;
     // - increase the rotation delta until it reaches `maxStarRotDelta`; and
-    // - increase the color delta until it reaches 1.0
+    // - increase the colour delta until it reaches 1.0
     _starScale = max(minStarScale, _starScale - starScaleInc);
     _starRotDelta = min(maxStarRotDelta, _starRotDelta + starRotInc);
     _starColorDelta = min(1.0, _starColorDelta + starColorInc);
-  } else if (_starScale < 1.0 || _starColorDelta > 0.0) {
-    // This branch will:
+  } else if (isStarAgitated()) {
+    // Otherwise, if the star is still in the "agitated" state:
     // - increase the scale until it reaches `maxStarScale`
     // - decrease the rotation delta until it reaches `minStarRotDelta`; and
-    // - decrease the color delta until it reaches 0.0
+    // - decrease the colour delta until it reaches 0.0
     _starScale = min(maxStarScale, _starScale + starScaleInc);
     _starRotDelta = max(minStarRotDelta, _starRotDelta - starRotInc);
     _starColorDelta = max(0.0, _starColorDelta - starColorInc);
@@ -99,6 +99,17 @@ void draw() {
 
   // Continue rotating by adding the delta (determines its rotation speed)
   _starRotAngle += _starRotDelta;
+}
+
+/**
+ * Determines whether or not the star is in the "agitated" state.
+ *
+ * This function will return `true` if the star is still shrunken and/or if the
+ * star is still red-ish in colour. It will return `false` once the scale and
+ * colour returns to their original values.
+ */
+boolean isStarAgitated() {
+  return _starScale < maxStarScale || _starColorDelta > 0.0;
 }
 
 /**
