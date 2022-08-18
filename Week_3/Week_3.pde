@@ -69,15 +69,21 @@ void draw() {
   float translateX = constrain(mouseX, starMinX, starMaxX);
   float translateY = constrain(mouseY, starMinY, starMaxY);
 
-  // Calculate the star's scale
-  // If the mouse is pressed, we'll decrease the scale by `starScaleInc` until
-  // we hit `minStarScale`. Otherwise, if the mouse is not pressed, revert back
-  // to the default scale of `1.0`.
+  // Calculate the star's scale, rotation delta and color delta depending on
+  // whether or not the mouse is pressed
   if (mousePressed) {
+    // This branch will:
+    // - decrease the scale until it reaches `minStarScale`;
+    // - increase the rotation delta until it reaches `maxStarRotDelta`; and
+    // - increase the color delta until it reaches 1.0
     _starScale = max(minStarScale, _starScale - starScaleInc);
     _starRotDelta = min(maxStarRotDelta, _starRotDelta + starRotInc);
     _starColorDelta = min(1.0, _starColorDelta + starColorInc);
   } else if (_starScale < 1.0 || _starColorDelta > 0.0) {
+    // This branch will:
+    // - increase the scale until it reaches `maxStarScale`
+    // - decrease the rotation delta until it reaches `minStarRotDelta`; and
+    // - decrease the color delta until it reaches 0.0
     _starScale = min(maxStarScale, _starScale + starScaleInc);
     _starRotDelta = max(minStarRotDelta, _starRotDelta - starRotInc);
     _starColorDelta = max(0.0, _starColorDelta - starColorInc);
