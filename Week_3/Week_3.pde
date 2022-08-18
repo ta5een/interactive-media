@@ -4,30 +4,30 @@
 // ------------------------- CONFIGURABLE VARIABLES ----------------------------
 
 // The number of sides of the star that follows the mouse
-int starSideCount = 8;
+final int starSideCount = 8;
 
 // The increment value when scaling the star
-float starScaleInc = 0.1;
+final float starScaleInc = 0.1;
 // The minimum scale when shrinking the star
-float minStarScale = 0.4;
+final float minStarScale = 0.4;
 // The maximum scale when growing the star
-float maxStarScale = 1.0;
+final float maxStarScale = 1.0;
 
 // The increment value when rotating the star
-float starRotInc = 0.5;
+final float starRotInc = 0.5;
 // The minimum delta when slowing down the rotation of the star
-float minStarRotDelta = 0.5;
+final float minStarRotDelta = 0.5;
 // The maximum delta when speeding the rotation of the star
-float maxStarRotDelta = 2.5;
+final float maxStarRotDelta = 2.5;
 
-// The increment value when transition the colour of the star
-float starColorInc = starScaleInc;
+// The increment value when transitioning the colour of the star
+final float starColorInc = starScaleInc;
 // The background colour
-color backgroundColor = color(38, 38, 38, 50);
+final color backgroundColor = color(38, 38, 38, 50);
 // The star's fill colour when calm
-color starCalmColor = color(84, 255, 255);
+final color starCalmColor = color(84, 255, 255);
 // The star's fill colour when agitated
-color starAgitatedColor = color(255, 101, 84);
+final color starAgitatedColor = color(255, 101, 84);
 
 // ------------------------ INTERNAL STATE VARIABLES ---------------------------
 
@@ -55,19 +55,19 @@ void draw() {
   // Here, `starOuterRadius` is multiplied by `starScale` to allow variables
   // that depend on it (such as `translateX` and `translateY`) to be
   // recalculated to reflect the new scaled size
-  float starOuterRadius = width * 0.15 * _starScale;
-  float starInnerRadius = starOuterRadius * 0.8;
+  final float starOuterRadius = width * 0.15 * _starScale;
+  final float starInnerRadius = starOuterRadius * 0.8;
 
   // Defining the min and max constraints of the star's translation
-  float starMinX = starOuterRadius;
-  float starMinY = starOuterRadius;
-  float starMaxX = width - starOuterRadius;
-  float starMaxY = width - starOuterRadius;
+  final float starMinX = starOuterRadius;
+  final float starMinY = starOuterRadius;
+  final float starMaxX = width - starOuterRadius;
+  final float starMaxY = width - starOuterRadius;
 
   // Translate the star to the mouse's current x and y position while
   // constraining it within the window's bounds.
-  float translateX = constrain(mouseX, starMinX, starMaxX);
-  float translateY = constrain(mouseY, starMinY, starMaxY);
+  final float translateX = constrain(mouseX, starMinX, starMaxX);
+  final float translateY = constrain(mouseY, starMinY, starMaxY);
 
   // Calculate the star's scale, rotation delta and colour delta depending on
   // whether or not the mouse is currently being pressed
@@ -106,7 +106,7 @@ void draw() {
  *
  * This function will return `true` if the star is still shrunken and/or if the
  * star is still red-ish in colour. It will return `false` once the scale and
- * colour returns to their original values.
+ * colour return to their original values.
  */
 boolean isStarAgitated() {
   return _starScale < maxStarScale || _starColorDelta > 0.0;
@@ -119,8 +119,8 @@ boolean isStarAgitated() {
 void polygon(int sideCount, float radius) {
   beginShape();
 
+  final float thetaInc = TWO_PI / sideCount;
   float theta = 0.0;
-  float thetaInc = TWO_PI / sideCount;
   float x = 0.0;
   float y = 0.0;
 
@@ -145,13 +145,13 @@ void star(int pointCount, float innerRadius, float outerRadius) {
   beginShape();
 
   // The number of vertexes the draw will always be double the number of points.
-  float vertexCount = pointCount * 2;
+  final float vertexCount = pointCount * 2;
 
   // `theta` is the current size of the angle which will determine the x and y
   // coordinates of the current vertex. It will be incremented by `thetaInc` on
   // every new vertex we want to draw.
   float theta = 0.0;
-  float thetaInc = TWO_PI / vertexCount;
+  final float thetaInc = TWO_PI / vertexCount;
 
   // Temporary x and y values that will be incremented until we finish drawing
   // the shape.
