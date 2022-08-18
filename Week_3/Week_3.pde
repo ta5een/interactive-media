@@ -1,9 +1,34 @@
-// The number of sides of the polygon that follows the mouse
-int polygonSideCount = 7;
-// Determines the starting rotation angle
-float rotationAngle = 0.0;
-// Determines the speed of the rotation
-float rotationDelta = 0.2;
+// ------------------------- CONFIGURABLE VARIABLES ----------------------------
+
+// The number of sides of the star that follows the mouse
+int starSideCount = 10;
+
+// The increment value when scaling the star
+float starScaleInc = 0.05;
+// The minimum scale when shrinking the star
+float minStarScale = 0.4;
+// The maximum scale when growing the star
+float maxStarScale = 1.0;
+
+// The increment value when rotating the star
+float starRotInc = 0.5;
+// The minimum delta when slowing down the rotation of the star
+float minStarRotDelta = 0.5;
+// The maximum delta when speeding the rotation of the star
+float maxStarRotDelta = 2.5;
+
+// The background color
+color backgroundColor = #262626;
+// The star's fill color
+color starColor = #ff6554;
+
+// ------------------------ INTERNAL STATE VARIABLES ---------------------------
+
+float _starScale = 1.0;
+float _starRotDelta = 1.0;
+float _starRotAngle = 0.0;
+
+// ------------------------------- FUNCTIONS -----------------------------------
 
 void setup() {
   size(800, 800);
@@ -12,11 +37,14 @@ void setup() {
 }
 
 void draw() {
-  background(0);
+  background(backgroundColor);
 
-  // Star variables
-  float starOuterRadius = width * 0.1;
-  float starInnerRadius = starOuterRadius * 0.85;
+  // Star radius sizes
+  // Here, `starOuterRadius` is multiplied by `starScale` to allow variables
+  // that depend on it (such as `translateX` and `translateY`) to be
+  // recalculated to reflect the new scaled size
+  float starOuterRadius = width * 0.15 * _starScale;
+  float starInnerRadius = starOuterRadius * 0.8;
 
   // Defining the min and max constraints of the star's translation
   float starMinX = starOuterRadius;
@@ -29,15 +57,28 @@ void draw() {
   float translateX = constrain(mouseX, starMinX, starMaxX);
   float translateY = constrain(mouseY, starMinY, starMaxY);
 
+  // Calculate the star's scale
+  // If the mouse is pressed, we'll decrease the scale by `starScaleInc` until
+  // we hit `minStarScale`. Otherwise, if the mouse is not pressed, revert back
+  // to the default scale of `1.0`.
+  if (mousePressed) {
+    _starScale = max(minStarScale, _starScale - starScaleInc);
+    _starRotDelta = min(maxStarRotDelta, _starRotDelta + starRotInc);
+  } else if (_starScale < 1.0) {
+    _starScale = min(maxStarScale, _starScale + starScaleInc);
+    _starRotDelta = max(minStarRotDelta, _starRotDelta - starRotInc);
+  }
+
   // Draw the star after translating and rotating the drawing context
   push();
   translate(translateX, translateY);
-  rotate(radians(rotationAngle));
-  star(7, starOuterRadius, starInnerRadius);
+  rotate(radians(_starRotAngle));
+  fill(starColor);
+  star(starSideCount, starOuterRadius, starInnerRadius);
   pop();
 
   // Continue rotating by adding the delta (determines its rotation speed)
-  rotationAngle += rotationDelta;
+  _starRotAngle += _starRotDelta;
 }
 
 /**
