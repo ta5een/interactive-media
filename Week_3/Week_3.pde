@@ -1,10 +1,13 @@
+// Week 3 (Animate the Mouse Pointer)
+// Author: Mohammed Ta-Seen Islam (13215660)
+
 // ------------------------- CONFIGURABLE VARIABLES ----------------------------
 
 // The number of sides of the star that follows the mouse
-int starSideCount = 10;
+int starSideCount = 8;
 
 // The increment value when scaling the star
-float starScaleInc = 0.05;
+float starScaleInc = 0.1;
 // The minimum scale when shrinking the star
 float minStarScale = 0.4;
 // The maximum scale when growing the star
@@ -17,27 +20,36 @@ float minStarRotDelta = 0.5;
 // The maximum delta when speeding the rotation of the star
 float maxStarRotDelta = 2.5;
 
+// The increment value when transition the color of the star
+float starColorInc = starScaleInc;
 // The background color
-color backgroundColor = #262626;
-// The star's fill color
-color starColor = #ff6554;
+color backgroundColor = color(38, 38, 38, 50);
+// The star's fill color when calm
+color starCalmColor = color(84, 255, 255);
+// The star's fill color when agitated
+color starAgitatedColor = color(255, 101, 84);
 
 // ------------------------ INTERNAL STATE VARIABLES ---------------------------
 
 float _starScale = 1.0;
 float _starRotDelta = 1.0;
 float _starRotAngle = 0.0;
+color _starColor = starCalmColor;
+float _starColorDelta = 0.0;
 
 // ------------------------------- FUNCTIONS -----------------------------------
 
 void setup() {
   size(800, 800);
   noStroke();
-  rectMode(CENTER);
 }
 
 void draw() {
-  background(backgroundColor);
+  // Draw a transparent background behind the star to give that "ghost" effect
+  push();
+  fill(backgroundColor);
+  rect(0, 0, width, height);
+  pop();
 
   // Star radius sizes
   // Here, `starOuterRadius` is multiplied by `starScale` to allow variables
@@ -64,16 +76,18 @@ void draw() {
   if (mousePressed) {
     _starScale = max(minStarScale, _starScale - starScaleInc);
     _starRotDelta = min(maxStarRotDelta, _starRotDelta + starRotInc);
-  } else if (_starScale < 1.0) {
+    _starColorDelta = min(1.0, _starColorDelta + starColorInc);
+  } else if (_starScale < 1.0 || _starColorDelta > 0.0) {
     _starScale = min(maxStarScale, _starScale + starScaleInc);
     _starRotDelta = max(minStarRotDelta, _starRotDelta - starRotInc);
+    _starColorDelta = max(0.0, _starColorDelta - starColorInc);
   }
 
   // Draw the star after translating and rotating the drawing context
   push();
   translate(translateX, translateY);
   rotate(radians(_starRotAngle));
-  fill(starColor);
+  fill(lerpColor(starCalmColor, starAgitatedColor, _starColorDelta));
   star(starSideCount, starOuterRadius, starInnerRadius);
   pop();
 
