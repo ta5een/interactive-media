@@ -21,5 +21,5 @@ Using the code for drawing and for generating an animation seen so far create an
 
 **Peer Reviews:** You will be asked to do 2 peer reviews after the submission date. Please contribute thoughtful and constructive critical analysis of your peer's code and artefact.
 
-[eif-research]: eif-research.feit.uts.edu.au
+[eif-research]: https://eif-research.feit.uts.edu.au
 [example]: https://canvas.uts.edu.au/courses/24942/pages/data-access-example
