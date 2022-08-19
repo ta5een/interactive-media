@@ -153,25 +153,3 @@ void star(int pointCount, float innerRadius, float outerRadius) {
 
   endShape(CLOSE);
 }
-
-/**
- * Draws a polygon with the given side count and radius (to determine its width
- * and height).
- */
-void polygon(int sideCount, float radius) {
-  beginShape();
-
-  final float thetaInc = TWO_PI / sideCount;
-  float theta = 0.0;
-  float x = 0.0;
-  float y = 0.0;
-
-  for (int i = 0; i < sideCount; i++) {
-    x = cos(theta) * radius;
-    y = sin(theta) * radius;
-    vertex(x, y);
-    theta += thetaInc;
-  }
-
-  endShape(CLOSE);
-}
