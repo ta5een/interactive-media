@@ -13,10 +13,10 @@ Interactive Media.
 ### With Visual Studio Code
 
 - Open up the command pallet with <kbd>Ctrl</kbd><kbd>⇧</kbd><kbd>P</kbd> on
-  Windows/Linux and <kbd>⇧</kbd><kbd>⌘</kbd><kbd>P</kbd> on macOS.
+  Windows/Linux or <kbd>⇧</kbd><kbd>⌘</kbd><kbd>P</kbd> on macOS.
 - Search for the `Tasks: Run Task` option and select it
 - Search for the `Run Sketch` option and select it
 
 This process may fail if you don't have the "processing-java" executable
 installed on your device. Please consult the Processing documentation to find
-our how to install it.
+out how to install it.
