@@ -20,10 +20,14 @@ final float minStarRotDelta = 0.5;
 // The maximum rotation speed to speed up to when the star is "agitated"
 final float maxStarRotDelta = 2.5;
 
-// The increment value when transitioning the star's colour between states
-final float starColorInc = starScaleInc;
-// The background colour (slightly transparent to give that "ghost" effect)
-final color backgroundColor = color(38, 38, 38, 50);
+// The increment value when transitioning the star and background colour between
+// the "calm" and "agitated" states
+final float colorInc = starScaleInc;
+// The background colour when the star is "calm" (slightly transparent to give
+// that "ghost" effect)
+final color backgroundCalmColor = color(38, 38, 38, 50);
+// The background colour when the star is "agitated"
+final color backgroundAgitatedColor = color(102, 82, 82, 50);
 // The star's fill colour when "calm"
 final color starCalmColor = color(84, 255, 255);
 // The star's fill colour when "agitated"
@@ -35,7 +39,7 @@ float _starScale = maxStarScale;
 float _starRotDelta = minStarRotDelta;
 float _starRotAngle = 0.0;
 color _starColor = starCalmColor;
-float _starColorDelta = 0.0;
+float _colorDelta = 0.0;
 
 // ------------------------------- FUNCTIONS -----------------------------------
 
@@ -45,12 +49,6 @@ void setup() {
 }
 
 void draw() {
-  // Draw a transparent background behind the star to give that "ghost" effect
-  push();
-  fill(backgroundColor);
-  rect(0, 0, width, height);
-  pop();
-
   // Star radius sizes
   // Here, `starOuterRadius` is multiplied by `_starScale` to allow variables
   // that depend on it (such as `translateX` and `translateY`) to be continuously
@@ -78,7 +76,7 @@ void draw() {
     // - increase the colour delta until it reaches 1.0
     _starScale = max(minStarScale, _starScale - starScaleInc);
     _starRotDelta = min(maxStarRotDelta, _starRotDelta + starRotInc);
-    _starColorDelta = min(1.0, _starColorDelta + starColorInc);
+    _colorDelta = min(1.0, _colorDelta + colorInc);
   } else if (isStarAgitated()) {
     // Otherwise, if the star is still in the "agitated" state, transition to
     // the "calm" state:
@@ -87,14 +85,20 @@ void draw() {
     // - decrease the colour delta until it reaches 0.0
     _starScale = min(maxStarScale, _starScale + starScaleInc);
     _starRotDelta = max(minStarRotDelta, _starRotDelta - starRotInc);
-    _starColorDelta = max(0.0, _starColorDelta - starColorInc);
+    _colorDelta = max(0.0, _colorDelta - colorInc);
   }
+
+  // Draw a transparent background behind the star to give that "ghost" effect
+  push();
+  fill(lerpColor(backgroundCalmColor, backgroundAgitatedColor, _colorDelta));
+  rect(0, 0, width, height);
+  pop();
 
   // Draw the star after translating and rotating the drawing context
   push();
   translate(translateX, translateY);
   rotate(radians(_starRotAngle));
-  fill(lerpColor(starCalmColor, starAgitatedColor, _starColorDelta));
+  fill(lerpColor(starCalmColor, starAgitatedColor, _colorDelta));
   star(starSideCount, starOuterRadius, starInnerRadius);
   pop();
 
@@ -110,7 +114,7 @@ void draw() {
  * return to their original values.
  */
 boolean isStarAgitated() {
-  return _starScale < maxStarScale || _starColorDelta > 0.0;
+  return _starScale < maxStarScale || _colorDelta > 0.0;
 }
 
 /**
