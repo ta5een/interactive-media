@@ -17,7 +17,7 @@
       },
       "args": [
         "--force",
-        "--sketch=${workspaceRoot}",
+        "--sketch=${fileDirname}",
         "--output=${workspaceRoot}/out",
         "--run"
       ],
