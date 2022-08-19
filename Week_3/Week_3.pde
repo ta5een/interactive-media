@@ -15,24 +15,24 @@ final float maxStarScale = 1.0;
 
 // The increment value when rotating the star
 final float starRotInc = 0.5;
-// The minimum delta when slowing down the rotation of the star
+// The minimum rotation speed to slow down to when the star is "calm"
 final float minStarRotDelta = 0.5;
-// The maximum delta when speeding the rotation of the star
+// The maximum rotation speed to speed up to when the star is "agitated"
 final float maxStarRotDelta = 2.5;
 
-// The increment value when transitioning the colour of the star
+// The increment value when transitioning the star's colour between states
 final float starColorInc = starScaleInc;
-// The background colour
+// The background colour (slightly transparent to give that "ghost" effect)
 final color backgroundColor = color(38, 38, 38, 50);
-// The star's fill colour when calm
+// The star's fill colour when "calm"
 final color starCalmColor = color(84, 255, 255);
-// The star's fill colour when agitated
+// The star's fill colour when "agitated"
 final color starAgitatedColor = color(255, 101, 84);
 
 // ------------------------ INTERNAL STATE VARIABLES ---------------------------
 
-float _starScale = 1.0;
-float _starRotDelta = 1.0;
+float _starScale = maxStarScale;
+float _starRotDelta = minStarRotDelta;
 float _starRotAngle = 0.0;
 color _starColor = starCalmColor;
 float _starColorDelta = 0.0;
@@ -52,9 +52,9 @@ void draw() {
   pop();
 
   // Star radius sizes
-  // Here, `starOuterRadius` is multiplied by `starScale` to allow variables
-  // that depend on it (such as `translateX` and `translateY`) to be
-  // recalculated to reflect the new scaled size
+  // Here, `starOuterRadius` is multiplied by `_starScale` to allow variables
+  // that depend on it (such as `translateX` and `translateY`) to be continuously
+  // recalculated with the new scaled size
   final float starOuterRadius = width * 0.15 * _starScale;
   final float starInnerRadius = starOuterRadius * 0.8;
 
@@ -65,14 +65,14 @@ void draw() {
   final float starMaxY = width - starOuterRadius;
 
   // Translate the star to the mouse's current x and y position while
-  // constraining it within the window's bounds.
+  // constraining it to within the window's bounds
   final float translateX = constrain(mouseX, starMinX, starMaxX);
   final float translateY = constrain(mouseY, starMinY, starMaxY);
 
   // Calculate the star's scale, rotation delta and colour delta depending on
-  // whether or not the mouse is currently being pressed
+  // if the mouse is currently being pressed
   if (mousePressed) {
-    // If the mouse is pressed:
+    // If the mouse is currently being pressed:
     // - decrease the scale until it reaches `minStarScale`;
     // - increase the rotation delta until it reaches `maxStarRotDelta`; and
     // - increase the colour delta until it reaches 1.0
@@ -80,7 +80,8 @@ void draw() {
     _starRotDelta = min(maxStarRotDelta, _starRotDelta + starRotInc);
     _starColorDelta = min(1.0, _starColorDelta + starColorInc);
   } else if (isStarAgitated()) {
-    // Otherwise, if the star is still in the "agitated" state:
+    // Otherwise, if the star is still in the "agitated" state, transition to
+    // the "calm" state:
     // - increase the scale until it reaches `maxStarScale`
     // - decrease the rotation delta until it reaches `minStarRotDelta`; and
     // - decrease the colour delta until it reaches 0.0
@@ -104,27 +105,42 @@ void draw() {
 /**
  * Determines whether or not the star is in the "agitated" state.
  *
- * This function will return `true` if the star is still shrunken and/or if the
- * star is still red-ish in colour. It will return `false` once the scale and
- * colour return to their original values.
+ * This function will return `true` if the star is still shrunken and/or is
+ * still red-ish in colour. It will return `false` once the scale and colour
+ * return to their original values.
  */
 boolean isStarAgitated() {
   return _starScale < maxStarScale || _starColorDelta > 0.0;
 }
 
 /**
- * Draws a polygon with the given number of sides and radius (to determine its
- * width and height).
+ * Draws a star with the given point count, inner radius and outer radius.
+ *
+ * The `innerRadius` and `outerRadius` defines the zig-zag path of the star's
+ * shape. The more closer `innerRadius` is to `outerRadius`, the more the star
+ * resembles a regular polygon with `pointCount` sides.
  */
-void polygon(int sideCount, float radius) {
+void star(int pointCount, float innerRadius, float outerRadius) {
   beginShape();
 
-  final float thetaInc = TWO_PI / sideCount;
+  // The number of vertexes to draw will always be double the number of points.
+  final float vertexCount = pointCount * 2;
+
+  // `theta` is the current size of the angle which will determine the x and y
+  // coordinates of the current vertex. It will be incremented by `thetaInc` on
+  // every new vertex to draw.
+  final float thetaInc = TWO_PI / vertexCount;
   float theta = 0.0;
+
+  // Changing x and y values that will be continuously incremented until the
+  // shape has finished drawing.
   float x = 0.0;
   float y = 0.0;
 
-  for (int i = 0; i < sideCount; i++) {
+  // Draw the vertexes by alternating between the outer and inner radii as the
+  // loop make a full rotation (2π radians or 360°).
+  for (int i = 0; i < vertexCount; i++) {
+    float radius = i % 2 == 0 ? outerRadius : innerRadius;
     x = cos(theta) * radius;
     y = sin(theta) * radius;
     vertex(x, y);
@@ -135,33 +151,18 @@ void polygon(int sideCount, float radius) {
 }
 
 /**
- * Draws a star with the given number of points, inner radius and outer radius.
- *
- * The `innerRadius` and `outerRadius` defines the zig-zag path of the star's
- * shape. The more closer `innerRadius` is to `outerRadius`, the more the star
- * will look like a regular polygon with `pointCount` sides.
+ * Draws a polygon with the given side count and radius (to determine its width
+ * and height).
  */
-void star(int pointCount, float innerRadius, float outerRadius) {
+void polygon(int sideCount, float radius) {
   beginShape();
 
-  // The number of vertexes the draw will always be double the number of points.
-  final float vertexCount = pointCount * 2;
-
-  // `theta` is the current size of the angle which will determine the x and y
-  // coordinates of the current vertex. It will be incremented by `thetaInc` on
-  // every new vertex we want to draw.
+  final float thetaInc = TWO_PI / sideCount;
   float theta = 0.0;
-  final float thetaInc = TWO_PI / vertexCount;
-
-  // Temporary x and y values that will be incremented until we finish drawing
-  // the shape.
   float x = 0.0;
   float y = 0.0;
 
-  // Draw the vertexes by alternating between the outer and inner radii as we
-  // make a full rotation.
-  for (int i = 0; i < vertexCount; i++) {
-    float radius = i % 2 == 0 ? outerRadius : innerRadius;
+  for (int i = 0; i < sideCount; i++) {
     x = cos(theta) * radius;
     y = sin(theta) * radius;
     vertex(x, y);
