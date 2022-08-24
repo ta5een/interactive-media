@@ -1,17 +1,25 @@
 // Week 4 (Code an Animated Wallpaper)
 // Author: Mohammed Ta-Seen Islam (13215660)
 
+PaperPlane plane;
+float currRotation = 0.0;
+
 void setup() {
-  size(800, 800);
+  size(400, 400);
+  plane = new PaperPlane(new PVector(width / 2, height / 2));
+}
+
+void draw() {
   background(0);
+  plane.draw(radians(currRotation));
+}
 
-  PaperPlane plane = new PaperPlane();
-
-  push();
-  translate(width / 2, height / 2);
-  plane.draw();
-  pop();
-
+void keyPressed() {
+  if (key == 'w' || key == 'a') {
+    currRotation -= 10.0;
+  } else if (key == 's' || key == 'd') {
+    currRotation += 10.0;
+  }
 }
 
 /*
