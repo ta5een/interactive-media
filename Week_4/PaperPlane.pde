@@ -1,7 +1,7 @@
 public class PaperPlane {
 
   private float scale = width * 0.02;
-  private float acceleration = 3.0;
+  private float acceleration = 2.0;
 
   private PVector position;
   private PVector velocity = new PVector();
