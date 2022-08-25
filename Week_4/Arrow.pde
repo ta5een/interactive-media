@@ -1,9 +1,9 @@
 public class Arrow {
 
   private final float scale = width * 0.02;
-  private final float acceleration = 2.0;
+  private final float acceleration = 3.0;
 
-  private float rotation = 0.0;
+  private float theta = 0.0;
   private PVector position = new PVector();
   private PVector velocity = new PVector();
 
@@ -15,10 +15,6 @@ public class Arrow {
     position = startingPosition;
   }
 
-  public float getDirection() {
-    return this.currDirection;
-  }
-
   public void turn(float direction) {
     this.prevDirection = this.currDirection;
     this.currDirection = direction;
@@ -27,32 +23,26 @@ public class Arrow {
 
   private void update() {
     this.lerpProgress = (float(frameCount) / stepByFrameRate) % 1.0;
-    this.rotation = lerp(this.prevDirection, this.currDirection, this.lerpProgress);
+    this.theta = lerp(this.prevDirection, this.currDirection, this.lerpProgress);
 
-    // velocity.x = cos(rotation);
-    // velocity.y = sin(rotation);
-    // velocity.mult(acceleration);
+    this.velocity.x = cos(radians(this.theta));
+    this.velocity.y = sin(radians(this.theta));
+    this.velocity.mult(this.acceleration);
 
-    // position.add(velocity);
-    // position.x = ((position.x % width) + width) % width;
-    // position.y = ((position.y % width) + width) % width;
-    // println(position, velocity);
+    this.position.add(velocity);
+    this.position.x = ((position.x % width) + width) % width;
+    this.position.y = ((position.y % height) + height) % height;
   }
 
   public void draw() {
     this.update();
 
     push();
-    noFill();
     stroke(255);
+    fill(255, 255, 255, 100);
     translate(this.position.x, this.position.y);
 
-    push();
-    fill(0, 255, 0);
-    circle(0.0, 0.0, width * 0.005);
-    pop();
-
-    rotate(radians(this.rotation));
+    rotate(radians(this.theta));
     beginShape();
     vertex(this.scale * 2.0, 0.0);
     vertex(this.scale * -2.0, this.scale * 1.0);
@@ -61,19 +51,20 @@ public class Arrow {
     pop();
 
     if (__DEBUG__) {
+      // Draw vector direction
       push();
-      textSize(20);
-      text(
-        String.format(
-        "%.2f° -> %.2f° (%.2f)",
-        this.prevDirection,
-        this.currDirection,
-        this.lerpProgress
-        ),
-        10,
-        height - 10
-        );
+      translate(this.position.x, this.position.y);
+      stroke(255, 0, 0);
+      line(0, 0, this.velocity.x * 10, this.velocity.y * 10);
+      pop();
+
+      // Write out current state
+      push();
+      textSize(15);
+      text(String.format("%s @ %.2f°", this.velocity, this.theta), 10, height - 30);
+      text(String.format("%.2f° -> %.2f° (%.2f)", this.prevDirection, this.currDirection, this.lerpProgress), 10, height - 10);
       pop();
     }
   }
+
 }
