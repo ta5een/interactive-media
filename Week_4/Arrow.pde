@@ -1,7 +1,9 @@
 public class Arrow {
 
-  private final float scale = width * 0.02;
-  private final float acceleration = 3.0;
+  private static final float SCALE = 10;
+  private static final float WIDTH = SCALE * 4.0;
+  private static final float HEIGHT = SCALE * 2.0;
+  private static final float SPEED = 2.0;
 
   private float theta = 0.0;
   private PVector position = new PVector();
@@ -11,8 +13,17 @@ public class Arrow {
   private float prevDirection = 0.0;
   private float currDirection = 0.0;
 
-  public Arrow(PVector startingPosition) {
-    position = startingPosition;
+  private float arrowsSpacingX = 0.0;
+  private float arrowsSpacingY = 0.0;
+
+  public Arrow(PVector position) {
+    this.position = position;
+  }
+
+  public Arrow(PVector position, float arrowsSpacingX, float arrowsSpacingY) {
+    this.position = position;
+    this.arrowsSpacingX = arrowsSpacingX;
+    this.arrowsSpacingY = arrowsSpacingY;
   }
 
   public void turn(float direction) {
@@ -22,16 +33,30 @@ public class Arrow {
   }
 
   private void update() {
-    this.lerpProgress = (float(frameCount) / stepByFrameRate) % 1.0;
+    this.lerpProgress = (float(frameCount) / STEP_EVERY_FRAME_RATE) % 1.0;
     this.theta = lerp(this.prevDirection, this.currDirection, this.lerpProgress);
 
     this.velocity.x = cos(radians(this.theta));
     this.velocity.y = sin(radians(this.theta));
-    this.velocity.mult(this.acceleration);
-
+    this.velocity.mult(SPEED);
     this.position.add(velocity);
-    this.position.x = ((position.x % width) + width) % width;
-    this.position.y = ((position.y % height) + height) % height;
+
+    int boundsMinX = int(-this.arrowsSpacingX);
+    int boundsMaxX = int(width + this.arrowsSpacingX);
+    int boundsMinY = int(-this.arrowsSpacingY);
+    int boundsMaxY = int(height + this.arrowsSpacingY);
+
+    if (this.position.x < boundsMinX) {
+      this.position.x = boundsMaxX;
+    } else if (this.position.x > boundsMaxX) {
+      this.position.x = boundsMinX;
+    }
+
+    if (this.position.y < boundsMinY) {
+      this.position.y = boundsMaxY;
+    } else if (this.position.y > boundsMaxY) {
+      this.position.y = boundsMinY;
+    }
   }
 
   public void draw() {
@@ -44,9 +69,9 @@ public class Arrow {
 
     rotate(radians(this.theta));
     beginShape();
-    vertex(this.scale * 2.0, 0.0);
-    vertex(this.scale * -2.0, this.scale * 1.0);
-    vertex(this.scale * -2.0, this.scale * -1.0);
+    vertex(WIDTH * 0.5, 0.0);
+    vertex(WIDTH * -0.5, HEIGHT * 0.5);
+    vertex(WIDTH * -0.5, HEIGHT * -0.5);
     endShape(CLOSE);
     pop();
 
@@ -54,17 +79,9 @@ public class Arrow {
       // Draw vector direction
       push();
       translate(this.position.x, this.position.y);
-      stroke(255, 0, 0);
+      stroke(255, 0, 0, 100);
       line(0, 0, this.velocity.x * 10, this.velocity.y * 10);
-      pop();
-
-      // Write out current state
-      push();
-      textSize(15);
-      text(String.format("%s @ %.2f°", this.velocity, this.theta), 10, height - 30);
-      text(String.format("%.2f° -> %.2f° (%.2f)", this.prevDirection, this.currDirection, this.lerpProgress), 10, height - 10);
       pop();
     }
   }
-
 }
