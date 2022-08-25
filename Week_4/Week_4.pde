@@ -10,6 +10,7 @@ int currIndex = 0;
 
 ArrayList<Arrow> arrows = new ArrayList();
 float currDirection = 0.0;
+boolean shouldTurn = false;
 
 void setup() {
   size(1280, 720);
@@ -19,20 +20,19 @@ void setup() {
   rowCount = table.getRowCount();
   currDirection = table.getFloat(0, 1);
 
-  PVector topLeft = new PVector();
-  int numCols = 12;
-  float arrowsSpacingX = width / (numCols - 1);
-
-  int numRows = 8;
-  float arrowsSpacingY = height / (numRows - 1);
+  var numCols = 12;
+  var numRows = 8;
+  var arrowsSpacingX = width / (numCols - 1);
+  var arrowsSpacingY = height / (numRows - 1);
+  var topLeft = new PVector();
 
   for (int row = 0; row < numRows; row++) {
     for (int col = 0; col < numCols; col++) {
-      PVector position = topLeft.copy();
+      var position = topLeft.copy();
       position.x += (arrowsSpacingX * col);
       position.y += (arrowsSpacingY * row);
 
-      Arrow arrow = new Arrow(position, arrowsSpacingX / 2, arrowsSpacingY / 2);
+      var arrow = new Arrow(position, arrowsSpacingX / 2, arrowsSpacingY / 2);
       arrow.turn(currDirection);
       arrows.add(arrow);
     }
@@ -43,15 +43,16 @@ void draw() {
   if (frameCount % STEP_EVERY_FRAME_RATE == 0) {
     currIndex = (currIndex + 1) % rowCount;
     currDirection = table.getFloat(currIndex, 1);
-    for (Arrow arrow : arrows) {
-      arrow.turn(currDirection);
-    }
+    shouldTurn = true;
   }
 
   background(20);
-  for (Arrow arrow : arrows) {
+  for (var arrow : arrows) {
+    if (shouldTurn) arrow.turn(currDirection);
     arrow.draw();
   }
+
+  shouldTurn = false;
 
   if (__DEBUG__) {
     // Write out current direction at the bottom left of the window

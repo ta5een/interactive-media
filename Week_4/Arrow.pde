@@ -13,11 +13,13 @@ public class Arrow {
   private float prevDirection = 0.0;
   private float currDirection = 0.0;
 
-  private float arrowsSpacingX = 0.0;
-  private float arrowsSpacingY = 0.0;
+  private final float arrowsSpacingX;
+  private final float arrowsSpacingY;
 
   public Arrow(PVector position) {
     this.position = position;
+    this.arrowsSpacingX = 0.0;
+    this.arrowsSpacingY = 0.0;
   }
 
   public Arrow(PVector position, float arrowsSpacingX, float arrowsSpacingY) {
@@ -41,10 +43,10 @@ public class Arrow {
     this.velocity.mult(SPEED);
     this.position.add(velocity);
 
-    int boundsMinX = int(-this.arrowsSpacingX);
-    int boundsMaxX = int(width + this.arrowsSpacingX);
-    int boundsMinY = int(-this.arrowsSpacingY);
-    int boundsMaxY = int(height + this.arrowsSpacingY);
+    var boundsMinX = int(-this.arrowsSpacingX);
+    var boundsMaxX = int(width + this.arrowsSpacingX);
+    var boundsMinY = int(-this.arrowsSpacingY);
+    var boundsMaxY = int(height + this.arrowsSpacingY);
 
     if (this.position.x < boundsMinX) {
       this.position.x = boundsMaxX;
