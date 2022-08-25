@@ -1,8 +1,9 @@
-public class PaperPlane {
+public class Arrow {
 
   private final float scale = width * 0.02;
   private final float acceleration = 2.0;
 
+  private float rotation = 0.0;
   private PVector position = new PVector();
   private PVector velocity = new PVector();
 
@@ -10,7 +11,7 @@ public class PaperPlane {
   private float prevDirection = 0.0;
   private float currDirection = 0.0;
 
-  public PaperPlane(PVector startingPosition) {
+  public Arrow(PVector startingPosition) {
     position = startingPosition;
   }
 
@@ -22,6 +23,11 @@ public class PaperPlane {
     this.prevDirection = this.currDirection;
     this.currDirection = direction;
     this.lerpProgress = 0.0;
+  }
+
+  private void update() {
+    this.lerpProgress = (float(frameCount) / stepByFrameRate) % 1.0;
+    this.rotation = lerp(this.prevDirection, this.currDirection, this.lerpProgress);
 
     // velocity.x = cos(rotation);
     // velocity.y = sin(rotation);
@@ -34,7 +40,7 @@ public class PaperPlane {
   }
 
   public void draw() {
-    float rotation = lerp(this.prevDirection, this.currDirection, this.lerpProgress);
+    this.update();
 
     push();
     noFill();
@@ -46,7 +52,7 @@ public class PaperPlane {
     circle(0.0, 0.0, width * 0.005);
     pop();
 
-    rotate(radians(rotation));
+    rotate(radians(this.rotation));
     beginShape();
     vertex(this.scale * 2.0, 0.0);
     vertex(this.scale * -2.0, this.scale * 1.0);
@@ -59,17 +65,15 @@ public class PaperPlane {
       textSize(20);
       text(
         String.format(
-          "%.2f° -> %.2f° (%.2f)",
-          this.prevDirection,
-          this.currDirection,
-          this.lerpProgress
+        "%.2f° -> %.2f° (%.2f)",
+        this.prevDirection,
+        this.currDirection,
+        this.lerpProgress
         ),
         10,
         height - 10
-      );
+        );
       pop();
     }
-
-    lerpProgress = ((float)frameCount / stepByFrameRate) % 1.0;
   }
 }

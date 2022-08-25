@@ -4,26 +4,30 @@
 static final boolean __DEBUG__ = true;
 static final int stepByFrameRate = 80;
 
-PaperPlane plane;
-
 Table table;
 int rowCount = 0;
 int currIndex = 0;
+
+Arrow arrow;
+float currDirection = 0.0;
 
 void setup() {
   size(400, 400);
   table = loadTable("wind_direction.csv", "csv");
   rowCount = table.getRowCount();
-  plane = new PaperPlane(new PVector(width / 2, height / 2));
+
+  currDirection = table.getFloat(0, 1);
+  arrow = new Arrow(new PVector(width / 2, height / 2));
+  arrow.turn(currDirection);
 }
 
 void draw() {
   if (frameCount % stepByFrameRate == 0) {
     currIndex = (currIndex + 1) % rowCount;
-    float newDirection = table.getFloat(currIndex, 1);
-    plane.turn(newDirection);
+    currDirection = table.getFloat(currIndex, 1);
+    arrow.turn(currDirection);
   }
 
-  background(0);
-  plane.draw();
+  background(20);
+  arrow.draw();
 }
