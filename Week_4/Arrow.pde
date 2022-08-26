@@ -13,8 +13,8 @@ public class Arrow {
   private float lerpProgress = 0.0;
   private float prevDirection = 0.0;
   private float currDirection = 0.0;
-  private float prevSpeed = 0.0;
-  private float currSpeed = 1.0;
+  private float prevGust = 0.0;
+  private float currGust = 1.0;
 
   private final float arrowsSpacingX;
   private final float arrowsSpacingY;
@@ -31,18 +31,18 @@ public class Arrow {
     this.arrowsSpacingY = arrowsSpacingY;
   }
 
-  public void changeDirectionAndSpeed(float direction, float speed) {
+  public void changeDirectionAndGust(float direction, float speed) {
     this.prevDirection = this.currDirection;
     this.currDirection = direction;
-    this.prevSpeed = this.currSpeed;
-    this.currSpeed = speed;
+    this.prevGust = this.currGust;
+    this.currGust = speed;
     this.lerpProgress = 0.0;
   }
 
   private void update() {
     this.lerpProgress = (float(frameCount) / UPDATE_EVERY_FRAME_RATE) % 1.0;
     this.theta = lerp(this.prevDirection, this.currDirection, this.lerpProgress);
-    this.speed = lerp(this.prevSpeed, this.currSpeed, this.lerpProgress);
+    this.speed = lerp(this.prevGust, this.currGust, this.lerpProgress);
 
     this.velocity.x = cos(radians(this.theta));
     this.velocity.y = sin(radians(this.theta));

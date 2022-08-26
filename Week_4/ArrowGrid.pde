@@ -39,7 +39,7 @@ public class ArrowGrid {
         position.y += (arrowsSpacingY * row);
 
         var arrow = new Arrow(position, arrowsSpacingX / 2, arrowsSpacingY / 2);
-        arrow.changeDirectionAndSpeed(this.currDir, this.currGust);
+        arrow.changeDirectionAndGust(this.currDir, this.currGust);
         arrows.add(arrow);
       }
     }
@@ -58,7 +58,7 @@ public class ArrowGrid {
 
     for (Arrow arrow : this.arrows) {
       if (shouldChange) {
-        arrow.changeDirectionAndSpeed(this.currDir, this.currGust);
+        arrow.changeDirectionAndGust(this.currDir, this.currGust);
       }
       arrow.draw();
     }
