@@ -2,21 +2,25 @@
 // Author: Mohammed Ta-Seen Islam (13215660)
 
 static final boolean __DEBUG__ = true;
-static final int STEP_EVERY_FRAME_RATE = 60;
+static final int UPDATE_EVERY_FRAME_RATE = 60;
 
 ArrowGrid arrowGrid;
-int numCols = 12;
-int numRows = 8;
+final int numCols = 8;
+final int numRows = 6;
+
+final String windDirSource = "wind_direction.csv";
+final String windGustSource = "peak_wind_gust.csv";
 
 void setup() {
-  size(1280, 720);
-  background(20);
+  size(1080, 607);
+  background(255);
 
-  Table table = loadTable("wind_direction.csv", "csv");
-  arrowGrid = new ArrowGrid(table, numCols, numRows);
+  Table windDirectionTable = loadTable(windDirSource, "csv");
+  Table windGustTable = loadTable(windGustSource, "csv");
+  arrowGrid = new ArrowGrid(windDirectionTable, windGustTable, numCols, numRows);
 }
 
 void draw() {
-  background(20);
+  background(255);
   arrowGrid.draw();
 }

@@ -1,20 +1,29 @@
 public class ArrowGrid {
 
-  private Table table;
-  private int tableRowCount = 0;
-  private int currTableIndex = 0;
+  private Table windDirTable;
+  private int windDirTableRowCount = 0;
+  private int currWindDirTableIndex = 0;
 
-  private ArrayList<Arrow> arrows = new ArrayList();
-  private float currDirection = 0.0;
-  private boolean shouldTurn = false;
+  private Table windGustTable;
+  private int windGustTableRowCount = 0;
+  private int currWindGustTableIndex = 0;
+
+  private final ArrayList<Arrow> arrows = new ArrayList();
+  private float currDir = 0.0;
+  private float currGust = 0.0;
+  private boolean shouldChange = false;
 
   private final int numCols;
   private final int numRows;
 
-  public ArrowGrid (Table table, int numCols, int numRows) {
-    this.table = table;
-    this.tableRowCount = table.getRowCount();
-    this.currDirection = table.getFloat(this.currTableIndex, 1);
+  public ArrowGrid (Table windDirTable, Table windGustTable, int numCols, int numRows) {
+    this.windDirTable = windDirTable;
+    this.windDirTableRowCount = windDirTable.getRowCount();
+    this.currDir = windDirTable.getFloat(this.currWindDirTableIndex, 1);
+
+    this.windGustTable = windGustTable;
+    this.windGustTableRowCount = windDirTable.getRowCount();
+    this.currGust = windGustTable.getFloat(this.currWindGustTableIndex, 1);
 
     this.numCols = numCols;
     this.numRows = numRows;
@@ -23,40 +32,47 @@ public class ArrowGrid {
     var arrowsSpacingY = height / (this.numRows - 1);
     var topLeft = new PVector();
 
-    for (int row = 0; row < numRows; row++ ) {
+    for (int row = 0; row < numRows; row++) {
       for (int col = 0; col < numCols; col++) {
         var position = topLeft.copy();
         position.x += (arrowsSpacingX * col);
         position.y += (arrowsSpacingY * row);
 
         var arrow = new Arrow(position, arrowsSpacingX / 2, arrowsSpacingY / 2);
-        arrow.turn(this.currDirection);
+        arrow.changeDirectionAndSpeed(this.currDir, this.currGust);
         arrows.add(arrow);
       }
     }
   }
 
   public void draw() {
-    if (frameCount % STEP_EVERY_FRAME_RATE == 0) {
-      this.currTableIndex = (this.currTableIndex + 1) % this.tableRowCount;
-      this.currDirection = this.table.getFloat(this.currTableIndex, 1);
-      this.shouldTurn = true;
+    if (frameCount == 1 || frameCount % UPDATE_EVERY_FRAME_RATE == 0) {
+      this.currDir = this.windDirTable.getFloat(this.currWindDirTableIndex, 1);
+      this.currWindDirTableIndex = (this.currWindDirTableIndex + 1) % this.windDirTableRowCount;
+
+      this.currGust = this.windGustTable.getFloat(this.currWindGustTableIndex, 1);
+      this.currWindGustTableIndex = (this.currWindGustTableIndex + 1) % this.windGustTableRowCount;
+
+      this.shouldChange = true;
     }
 
     for (Arrow arrow : this.arrows) {
-      if (shouldTurn) arrow.turn(currDirection);
+      if (shouldChange) {
+        arrow.changeDirectionAndSpeed(this.currDir, this.currGust);
+      }
       arrow.draw();
     }
 
-    shouldTurn = false;
+    shouldChange = false;
 
     if (__DEBUG__) {
-      // Write out current direction at the bottom left of the window
+      // Write out current gust and direction at the bottom left of the window
       push();
       textSize(25);
-      text(String.format("%.2f°", currDirection), 20, height - 20);
+      fill(0);
+      text(String.format("Wind Gust: %.2f km/h", this.currGust), 20, height - 60);
+      text(String.format("Wind Direction: %.2f°", this.currDir), 20, height - 20);
       pop();
     }
   }
-
 }

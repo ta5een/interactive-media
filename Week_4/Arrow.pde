@@ -3,8 +3,9 @@ public class Arrow {
   private static final float SCALE = 10;
   private static final float WIDTH = SCALE * 4.0;
   private static final float HEIGHT = SCALE * 2.0;
-  private static final float SPEED = 2.0;
+  private final color ARROW_COLOR = color(53, 66, 184);
 
+  private float speed = 0.0;
   private float theta = 0.0;
   private PVector position = new PVector();
   private PVector velocity = new PVector();
@@ -12,6 +13,8 @@ public class Arrow {
   private float lerpProgress = 0.0;
   private float prevDirection = 0.0;
   private float currDirection = 0.0;
+  private float prevSpeed = 0.0;
+  private float currSpeed = 1.0;
 
   private final float arrowsSpacingX;
   private final float arrowsSpacingY;
@@ -28,19 +31,22 @@ public class Arrow {
     this.arrowsSpacingY = arrowsSpacingY;
   }
 
-  public void turn(float direction) {
+  public void changeDirectionAndSpeed(float direction, float speed) {
     this.prevDirection = this.currDirection;
     this.currDirection = direction;
+    this.prevSpeed = this.currSpeed;
+    this.currSpeed = speed;
     this.lerpProgress = 0.0;
   }
 
   private void update() {
-    this.lerpProgress = (float(frameCount) / STEP_EVERY_FRAME_RATE) % 1.0;
+    this.lerpProgress = (float(frameCount) / UPDATE_EVERY_FRAME_RATE) % 1.0;
     this.theta = lerp(this.prevDirection, this.currDirection, this.lerpProgress);
+    this.speed = lerp(this.prevSpeed, this.currSpeed, this.lerpProgress);
 
     this.velocity.x = cos(radians(this.theta));
     this.velocity.y = sin(radians(this.theta));
-    this.velocity.mult(SPEED);
+    this.velocity.mult(this.speed);
     this.position.add(velocity);
 
     var boundsMinX = int(-this.arrowsSpacingX);
@@ -65,26 +71,26 @@ public class Arrow {
     this.update();
 
     push();
-    stroke(255);
-    fill(255, 255, 255, int(255 * 0.4));
+    stroke(ARROW_COLOR);
+    fill(ARROW_COLOR, int(255 * 0.4));
     translate(this.position.x, this.position.y);
 
     rotate(radians(this.theta));
     beginShape();
     vertex(WIDTH * 0.5, 0.0);
-    vertex(WIDTH * -0.5, HEIGHT * 0.5);
+    vertex(WIDTH * -0.5, HEIGHT * 1.0);
     vertex(WIDTH * -0.25, 0.0);
-    vertex(WIDTH * -0.5, HEIGHT * -0.5);
-    endShape();
+    vertex(WIDTH * -0.5, HEIGHT * -1.0);
+    endShape(CLOSE);
     pop();
 
-    if (__DEBUG__) {
-      // Draw vector direction
-      push();
-      translate(this.position.x, this.position.y);
-      stroke(255, 0, 0, 100);
-      line(0, 0, this.velocity.x * 10, this.velocity.y * 10);
-      pop();
-    }
+    // if (__DEBUG__) {
+    //   // Draw vector direction
+    //   push();
+    //   translate(this.position.x, this.position.y);
+    //   stroke(255, 0, 0, 100);
+    //   line(0, 0, this.velocity.x * 10, this.velocity.y * 10);
+    //   pop();
+    // }
   }
 }
