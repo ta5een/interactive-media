@@ -66,15 +66,16 @@ public class Arrow {
 
     push();
     stroke(255);
-    fill(255, 255, 255, 100);
+    fill(255, 255, 255, int(255 * 0.4));
     translate(this.position.x, this.position.y);
 
     rotate(radians(this.theta));
     beginShape();
     vertex(WIDTH * 0.5, 0.0);
     vertex(WIDTH * -0.5, HEIGHT * 0.5);
+    vertex(WIDTH * -0.25, 0.0);
     vertex(WIDTH * -0.5, HEIGHT * -0.5);
-    endShape(CLOSE);
+    endShape();
     pop();
 
     if (__DEBUG__) {
