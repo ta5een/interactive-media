@@ -1,5 +1,4 @@
 public class ArrowGrid {
-
   private Table windDirTable;
   private int windDirTableRowCount = 0;
   private int currWindDirTableIndex = 0;
@@ -46,7 +45,7 @@ public class ArrowGrid {
   }
 
   public void draw() {
-    if (frameCount == 1 || frameCount % UPDATE_EVERY_FRAME_RATE == 0) {
+    if (frameCount == 1 || frameCount % UPDATE_EVERY_FRAME == 0) {
       this.currDir = this.windDirTable.getFloat(this.currWindDirTableIndex, 1);
       this.currWindDirTableIndex = (this.currWindDirTableIndex + 1) % this.windDirTableRowCount;
 

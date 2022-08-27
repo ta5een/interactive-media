@@ -1,6 +1,5 @@
 public class Arrow {
-
-  private static final float SCALE = 10;
+  private static final float SCALE = 10.0;
   private static final float WIDTH = SCALE * 4.0;
   private static final float HEIGHT = SCALE * 2.0;
   private final color ARROW_COLOR = color(53, 66, 184);
@@ -19,14 +18,8 @@ public class Arrow {
   private final float arrowsSpacingX;
   private final float arrowsSpacingY;
 
-  public Arrow(PVector position) {
-    this.position = position;
-    this.arrowsSpacingX = 0.0;
-    this.arrowsSpacingY = 0.0;
-  }
-
-  public Arrow(PVector position, float arrowsSpacingX, float arrowsSpacingY) {
-    this.position = position;
+  public Arrow(PVector initialPosition, float arrowsSpacingX, float arrowsSpacingY) {
+    this.position = initialPosition;
     this.arrowsSpacingX = arrowsSpacingX;
     this.arrowsSpacingY = arrowsSpacingY;
   }
@@ -40,7 +33,7 @@ public class Arrow {
   }
 
   private void update() {
-    this.lerpProgress = (float(frameCount) / UPDATE_EVERY_FRAME_RATE) % 1.0;
+    this.lerpProgress = (float(frameCount) / UPDATE_EVERY_FRAME) % 1.0;
     this.theta = lerp(this.prevDirection, this.currDirection, this.lerpProgress);
     this.speed = lerp(this.prevGust, this.currGust, this.lerpProgress);
 
