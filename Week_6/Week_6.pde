@@ -1,4 +1,4 @@
-// Week 5 (Develop a graphical user interface for an existing sketch)
+// Week 6 (Develop a graphical user interface for an existing sketch)
 // Author: Mohammed Ta-Seen Islam (13215660)
 
 import controlP5.*;
