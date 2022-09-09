@@ -18,7 +18,7 @@ class BouncingBall {
   // Gravity acts at the shape's acceleration
   private final PVector _gravity;
 
-  private boolean isOnFloor = false;
+  private color _fillColor = color(127);
 
   public BouncingBall(
     float diameter,
@@ -30,6 +30,14 @@ class BouncingBall {
     _position = position;
     _velocity = velocity;
     _gravity = gravity;
+  }
+
+  public void setDiameter(float newDiameter) {
+    _diameter = newDiameter;
+  }
+
+  public void setFill(color newFill) {
+    _fillColor = newFill;
   }
 
   public void draw() {
@@ -44,12 +52,9 @@ class BouncingBall {
 
     // Bounce off the bottom edge of the window
     if (ballMaxBounds.y >= height) {
-      isOnFloor = true;
       // Reduce the velocity ever so slightly when it hits the bottom edge
       _velocity.y *= -0.95;
       _position.y = height - radius;
-    } else {
-      isOnFloor = false;
     }
 
     _position.add(_velocity);
@@ -59,7 +64,7 @@ class BouncingBall {
     push();
     stroke(255);
     strokeWeight(2);
-    fill(127);
+    fill(_fillColor);
     ellipse(_position.x, _position.y, _diameter, _diameter);
     if (__DEBUG__) {
       stroke(255, 0, 0);
