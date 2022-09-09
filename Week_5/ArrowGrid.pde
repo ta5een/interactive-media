@@ -1,9 +1,5 @@
 public class ArrowGrid {
   private final ArrayList<Arrow> arrows = new ArrayList();
-  private float currDir = 0.0;
-  private float currGust = 0.0;
-  private boolean shouldChange = false;
-
   private final int numCols;
   private final int numRows;
 
@@ -20,33 +16,25 @@ public class ArrowGrid {
         var position = topLeft.copy();
         position.x += (arrowsSpacingX * col);
         position.y += (arrowsSpacingY * row);
-
         var arrow = new Arrow(position, arrowsSpacingX / 2, arrowsSpacingY / 2);
-        arrow.changeDirection(this.currDir);
-        arrow.changeGust(this.currGust);
         arrows.add(arrow);
       }
     }
   }
 
-  public void draw() {
+  public void draw(float direction, float gust, float temperature) {
     for (Arrow arrow : this.arrows) {
-       if (shouldChange) {
-         arrow.changeDirection(this.currDir);
-         arrow.changeGust(this.currGust);
-       }
-      arrow.draw();
+      arrow.draw(direction, gust, temperature);
     }
 
-     shouldChange = false;
-
+    // Write out current gust and direction at the bottom left of the window
     if (__DEBUG__) {
-      // Write out current gust and direction at the bottom left of the window
       push();
       textSize(25);
       fill(0);
-      text(String.format("Wind Gust: %.2f km/h", this.currGust), 20, height - 60);
-      text(String.format("Wind Direction: %.2f°", this.currDir), 20, height - 20);
+      text(String.format("Air Temp: %.2f°C", temperature), 20, height - 100);
+      text(String.format("Wind Gust: %.2f m/s", gust), 20, height - 60);
+      text(String.format("Wind Direction: %.2f°", direction), 20, height - 20);
       pop();
     }
   }

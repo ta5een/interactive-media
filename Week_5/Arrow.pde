@@ -1,51 +1,30 @@
 public class Arrow {
   private static final float SCALE = 10.0;
-  private static final float WIDTH = SCALE * 4.0;
-  private static final float HEIGHT = SCALE * 2.0;
-  private final color ARROW_COLOR = color(53, 66, 184);
+  private static final float ARROW_WIDTH = SCALE * 4.0;
+  private static final float ARROW_HEIGHT = SCALE * 2.0;
+  private final color ARROW_COLD_COLOR = color(53, 134, 184);
+  private final color ARROW_HOT_COLOR = color(184, 53, 53);
 
-  private float speed = 0.0;
-  private float theta = 0.0;
   private PVector position = new PVector();
   private PVector velocity = new PVector();
-
-  //private float lerpProgress = 0.0;
-  //private float prevDirection = 0.0;
-  //private float currDirection = 0.0;
-  //private float prevGust = 0.0;
-  //private float currGust = 0.0;
 
   private final float arrowsSpacingX;
   private final float arrowsSpacingY;
 
-  public Arrow(PVector initialPosition, float arrowsSpacingX, float arrowsSpacingY) {
+  public Arrow(
+    PVector initialPosition,
+    float arrowsSpacingX,
+    float arrowsSpacingY
+  ) {
     this.position = initialPosition;
     this.arrowsSpacingX = arrowsSpacingX;
     this.arrowsSpacingY = arrowsSpacingY;
   }
 
-  public void changeDirection(float direction) {
-    //this.prevDirection = this.currDirection;
-    //this.currDirection = direction;
-    //this.lerpProgress = 0.0;
-    this.theta = direction;
-  }
-
-  public void changeGust(float speed) {
-    //this.prevGust = this.currGust;
-    //this.currGust = speed;
-    //this.lerpProgress = 0.0;
-    this.speed = speed;
-  }
-
-  private void update() {
-    //this.lerpProgress = (float(frameCount) / UPDATE_EVERY_FRAME) % 1.0;
-    //this.theta = lerp(this.prevDirection, this.currDirection, this.lerpProgress);
-    //this.speed = lerp(this.prevGust, this.currGust, this.lerpProgress);
-
-    this.velocity.x = cos(radians(this.theta));
-    this.velocity.y = sin(radians(this.theta));
-    this.velocity.mult(this.speed);
+  private void update(float direction, float gust) {
+    this.velocity.x = cos(radians(direction));
+    this.velocity.y = sin(radians(direction));
+    this.velocity.mult(gust);
     this.position.add(velocity);
 
     var boundsMinX = int(-this.arrowsSpacingX);
@@ -66,25 +45,26 @@ public class Arrow {
     }
   }
 
-  public void draw() {
-    this.update();
+  public void draw(float direction, float gust, float temperature) {
+    this.update(direction, gust);
+    var fillLerp = map(temperature, MIN_TEMP, MAX_TEMP, 0.0, 1.0);
+    var arrowColor = lerpColor(ARROW_COLD_COLOR, ARROW_HOT_COLOR, fillLerp);
 
     push();
-    stroke(ARROW_COLOR);
-    fill(ARROW_COLOR, int(255 * 0.4));
+    stroke(arrowColor);
+    fill(arrowColor, int(255 * 0.4));
     translate(this.position.x, this.position.y);
-
-    rotate(radians(this.theta));
+    rotate(radians(direction));
     beginShape();
-    vertex(WIDTH * 0.5, 0.0);
-    vertex(WIDTH * -0.5, HEIGHT * 1.0);
-    vertex(WIDTH * -0.25, 0.0);
-    vertex(WIDTH * -0.5, HEIGHT * -1.0);
+    vertex(ARROW_WIDTH * 0.5, 0.0);
+    vertex(ARROW_WIDTH * -0.5, ARROW_HEIGHT * 1.0);
+    vertex(ARROW_WIDTH * -0.25, 0.0);
+    vertex(ARROW_WIDTH * -0.5, ARROW_HEIGHT * -1.0);
     endShape(CLOSE);
     pop();
 
+    // Draw vector direction
     // if (__DEBUG__) {
-    //   // Draw vector direction
     //   push();
     //   translate(this.position.x, this.position.y);
     //   stroke(255, 0, 0, 100);
