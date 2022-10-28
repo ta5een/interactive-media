@@ -8,7 +8,7 @@ final color CELL_COLOR = color(164, 48, 227);
 final color BACKGROUND_COLOR = color(227, 203, 48);
 
 final int PAUSE_BUTTON_SIZE = 50;
-final float PAUSE_BUTTON_PADDING = 25;
+final float PAUSE_BUTTON_OFFSET = 25;
 
 Capture video;
 int cellSize = 15;
@@ -32,10 +32,10 @@ void setup() {
   video = new Capture(this, width, height);
 
   PVector bottomLeft = new PVector(0, height);
-  PVector buttonPosition = bottomLeft.add(PAUSE_BUTTON_PADDING, -(PAUSE_BUTTON_PADDING + PAUSE_BUTTON_SIZE));
+  PVector buttonPosition = bottomLeft.add(PAUSE_BUTTON_OFFSET, -(PAUSE_BUTTON_OFFSET + PAUSE_BUTTON_SIZE));
   cp5 = new ControlP5(this);
   cp5.addToggle("togglePlayStream")
-    .setLabel("")
+    .setLabel("Toggle Camera")
     .setValue(playStream)
     .setSize(PAUSE_BUTTON_SIZE, PAUSE_BUTTON_SIZE)
     .setPosition(buttonPosition.x, buttonPosition.y);
